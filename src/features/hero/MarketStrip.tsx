@@ -1,13 +1,20 @@
 import type { ReactNode } from "react";
 import ChevronLoader from "../../brand/ChevronLoader.tsx";
 import Delta from "../../components/Delta.tsx";
-import { useMarketData } from "../../lib/dexscreener/useMarketData.ts";
+import { useMarketData, type MarketState } from "../../lib/dexscreener/useMarketData.ts";
 import { formatUsdCompact } from "../../lib/format.ts";
+import { PREVIEW_AVAILABLE, usePreviewActive } from "../../preview/previewMode.ts";
+import { sampleMarket } from "../../preview/sampleMarket.ts";
 
 const CELLS = ["Market cap", "Liquidity", "Volume 24h", "Change 24h"] as const;
 
 export default function MarketStrip() {
-  const market = useMarketData();
+  const liveMarket = useMarketData();
+  const previewActive = usePreviewActive();
+  const market: MarketState =
+    PREVIEW_AVAILABLE && previewActive
+      ? { status: "ready", data: sampleMarket("STHINK", "SOL") }
+      : liveMarket;
 
   const values: Record<(typeof CELLS)[number], ReactNode> | null =
     market.status === "ready"

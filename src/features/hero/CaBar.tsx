@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { CA_PLACEHOLDER, external, isSet } from "../../config.ts";
+import { PREVIEW_AVAILABLE, usePreviewActive } from "../../preview/previewMode.ts";
+import { SAMPLE_ADDRESS } from "../../preview/sampleMarket.ts";
 
 function truncate(address: string): string {
   return `${address.slice(0, 4)}…${address.slice(-4)}`;
@@ -8,7 +10,9 @@ function truncate(address: string): string {
 type CopyState = "idle" | "copied" | "failed";
 
 export default function CaBar() {
-  const address = external.contractAddress;
+  const previewActive = usePreviewActive();
+  const address =
+    PREVIEW_AVAILABLE && previewActive ? SAMPLE_ADDRESS : external.contractAddress;
   const live = isSet(address);
   const [copyState, setCopyState] = useState<CopyState>("idle");
 

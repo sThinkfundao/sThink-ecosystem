@@ -4,6 +4,8 @@ import Hero from "./features/hero/Hero.tsx";
 import TokenIndex from "./features/tokens/TokenIndex.tsx";
 import LaunchSection from "./features/launch/LaunchSection.tsx";
 import Footer from "./features/footer/Footer.tsx";
+import PreviewBanner from "./preview/PreviewBanner.tsx";
+import { PREVIEW_AVAILABLE } from "./preview/previewMode.ts";
 import WalletModal, { type WalletName } from "./features/wallet/WalletModal.tsx";
 
 export default function App() {
@@ -22,6 +24,8 @@ export default function App() {
         <LaunchSection />
       </main>
       <Footer />
+      {PREVIEW_AVAILABLE && <div aria-hidden="true" className="h-16" />}
+      <PreviewBanner />
       <WalletModal
         open={walletOpen}
         connectedAs={connectedAs}
