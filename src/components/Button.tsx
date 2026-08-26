@@ -9,9 +9,10 @@ const BASE =
 
 const VARIANTS: Record<Variant, string> = {
   primary:
-    "bg-steel px-4 py-2.5 text-ground enabled:hover:bg-ice enabled:active:bg-steel",
+    "bg-steel px-4 py-2.5 text-ground shadow-[inset_0_1px_0_rgba(255,255,255,0.22),0_1px_2px_rgba(2,6,9,0.45)] " +
+    "enabled:hover:bg-ice enabled:active:bg-steel enabled:active:shadow-[inset_0_1px_2px_rgba(2,6,9,0.25)]",
   secondary:
-    "border border-edge bg-surface px-4 py-2.5 text-steel " +
+    "raised px-4 py-2.5 text-steel " +
     "enabled:hover:border-steel/40 enabled:hover:text-ice enabled:active:bg-panel",
   quiet:
     "px-2 py-1 text-teal enabled:hover:text-ice enabled:active:text-steel",

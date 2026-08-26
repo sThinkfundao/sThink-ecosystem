@@ -19,7 +19,7 @@ export default function CaBar() {
   }, [copyState]);
 
   return (
-    <div className="flex min-h-11 flex-wrap items-center gap-x-3 gap-y-1 rounded-sm border border-edge bg-surface px-3 py-2">
+    <div className="raised flex min-h-11 flex-wrap items-center gap-x-3 gap-y-1 rounded-sm px-3 py-2">
       <span className="text-label font-bold uppercase text-teal">CA</span>
       <span className="font-mono text-ui text-steel" title={live ? address : undefined}>
         {live ? truncate(address) : CA_PLACEHOLDER}

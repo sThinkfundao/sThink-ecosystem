@@ -32,7 +32,7 @@ export default function Modal({ open, onClose, labelledBy, children }: ModalProp
         if (e.target === ref.current && pressedBackdrop.current) ref.current.close();
       }}
       aria-labelledby={labelledBy}
-      className="m-auto w-[min(92vw,380px)] rounded-md border border-edge bg-panel p-0 text-steel backdrop:bg-ground/70"
+      className="overlay m-auto w-[min(92vw,380px)] rounded-md p-0 text-steel backdrop:bg-ground/70"
     >
       {children}
     </dialog>

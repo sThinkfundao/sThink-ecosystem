@@ -47,15 +47,15 @@ export default function WalletModal({
                   type="button"
                   onClick={() => setSelected(wallet)}
                   aria-pressed={isSelected}
-                  className={`flex min-h-11 w-full items-center gap-3 rounded-sm border px-3 py-2 text-left text-ui transition-colors duration-100 active:translate-y-px ${
+                  className={`flex min-h-11 w-full items-center gap-3 rounded-sm px-3 py-2 text-left text-ui transition-colors duration-100 active:translate-y-px ${
                     isSelected
-                      ? "border-sky/60 bg-surface text-ice"
-                      : "border-edge bg-surface/50 text-steel hover:border-steel/40 hover:text-ice"
+                      ? "raised-2 text-ice outline outline-1 -outline-offset-1 outline-sky/60"
+                      : "raised text-steel hover:border-steel/40 hover:text-ice"
                   }`}
                 >
                   <span
                     aria-hidden="true"
-                    className="flex h-7 w-7 items-center justify-center rounded-sm border border-edge bg-ground font-mono text-ui text-sky"
+                    className="well flex h-7 w-7 items-center justify-center rounded-sm font-mono text-ui text-sky"
                   >
                     {wallet[0]}
                   </span>

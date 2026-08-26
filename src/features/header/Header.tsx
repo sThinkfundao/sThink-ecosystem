@@ -14,7 +14,7 @@ export default function Header({ connectedAs, onWalletClick }: HeaderProps) {
     <header
       className={`sticky top-0 z-40 transition-[background-color,box-shadow] duration-200 ${
         scrolled
-          ? "border-b border-edge bg-ground/85 shadow-[0_1px_0_0_rgba(6,13,18,0.6)] backdrop-blur-md"
+          ? "border-b border-edge bg-ground/85 shadow-[0_4px_16px_rgba(2,6,9,0.35)] backdrop-blur-md"
           : "border-b border-transparent bg-ground"
       }`}
     >
