@@ -88,6 +88,3 @@ export function sampleMarket(symbol: string, quoteSymbol: string): MarketData {
     fetchedAt: Date.now(),
   };
 }
-
-/** Stand-in mint address so the CA bar's live state can be reviewed. */
-export const SAMPLE_ADDRESS = "SAMPLEonly1111111111111111111111111111pump";

@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { CA_PLACEHOLDER, external, isSet } from "../../config.ts";
-import { PREVIEW_AVAILABLE, usePreviewActive } from "../../preview/previewMode.ts";
-import { SAMPLE_ADDRESS } from "../../preview/sampleMarket.ts";
 
 function truncate(address: string): string {
   return `${address.slice(0, 4)}…${address.slice(-4)}`;
@@ -9,10 +7,14 @@ function truncate(address: string): string {
 
 type CopyState = "idle" | "copied" | "failed";
 
+/*
+ * The contract address is never filled by preview mode. It is the one field
+ * where a plausible-looking value could be mistaken for a real one, so it
+ * shows the placeholder with copy disabled until config carries a real
+ * address — in every mode.
+ */
 export default function CaBar() {
-  const previewActive = usePreviewActive();
-  const address =
-    PREVIEW_AVAILABLE && previewActive ? SAMPLE_ADDRESS : external.contractAddress;
+  const address = external.contractAddress;
   const live = isSet(address);
   const [copyState, setCopyState] = useState<CopyState>("idle");
 
