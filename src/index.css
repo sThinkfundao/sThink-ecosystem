@@ -96,6 +96,110 @@ body {
   }
 }
 
+@keyframes loader-drop {
+  0%,
+  100% {
+    transform: translateY(-3px);
+    opacity: 0.5;
+  }
+  50% {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@keyframes loader-rise {
+  0%,
+  100% {
+    transform: translateY(3px);
+    opacity: 0.5;
+  }
+  50% {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+/*
+ * The token index is a real table on wide screens and restacks into cards
+ * below 40rem. Display overrides strip implicit table semantics, so the
+ * markup re-asserts ARIA roles and each cell carries its own label.
+ */
+@layer components {
+  .token-table {
+    display: block;
+  }
+  .token-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .token-table tbody {
+    display: grid;
+    gap: calc(var(--spacing) * 3);
+  }
+  .token-table tr {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: calc(var(--spacing) * 2) calc(var(--spacing) * 4);
+    border: 1px solid var(--color-edge);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    padding: calc(var(--spacing) * 4);
+  }
+  .token-table td {
+    display: block;
+  }
+  .token-table td[data-span] {
+    grid-column: 1 / -1;
+  }
+  .token-table .cell-label {
+    display: block;
+    margin-bottom: calc(var(--spacing) * 0.5);
+  }
+
+  @media (width >= 40rem) {
+    .token-table {
+      display: table;
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .token-table thead {
+      position: static;
+      width: auto;
+      height: auto;
+      clip-path: none;
+    }
+    .token-table tbody {
+      display: table-row-group;
+    }
+    .token-table tr {
+      display: table-row;
+      border: 0;
+      background: none;
+      padding: 0;
+    }
+    .token-table tbody tr {
+      transition: background-color 100ms;
+    }
+    .token-table tbody tr:hover {
+      background-color: var(--color-surface);
+    }
+    .token-table th,
+    .token-table td {
+      display: table-cell;
+      border-bottom: 1px solid var(--color-edge);
+      padding: calc(var(--spacing) * 3) calc(var(--spacing) * 3);
+      vertical-align: middle;
+    }
+    .token-table .cell-label {
+      display: none;
+    }
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

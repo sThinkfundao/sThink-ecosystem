@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Header from "./features/header/Header.tsx";
 import Hero from "./features/hero/Hero.tsx";
+import TokenIndex from "./features/tokens/TokenIndex.tsx";
 import WalletModal, { type WalletName } from "./features/wallet/WalletModal.tsx";
 
 export default function App() {
@@ -15,6 +16,7 @@ export default function App() {
       />
       <main>
         <Hero />
+        <TokenIndex />
       </main>
       <WalletModal
         open={walletOpen}

@@ -13,12 +13,12 @@ interface PairStackProps {
  */
 export function PairStackVertical({ base, quote }: PairStackProps) {
   return (
-    <span className="flex flex-col items-center gap-3">
-      <span className="font-mono text-3xl font-bold leading-none text-ice sm:text-4xl">
+    <span className="flex flex-col items-center gap-2">
+      <span className="font-mono text-xl font-bold leading-none tracking-tight text-ice">
         {base}
       </span>
-      <ChevronMark className="h-9 w-auto text-steel sm:h-11" />
-      <span className="font-mono text-3xl font-bold leading-none text-sky sm:text-4xl">
+      <ChevronMark className="h-6 w-auto text-steel" />
+      <span className="font-mono text-xl font-bold leading-none tracking-tight text-sky">
         {quote}
       </span>
     </span>

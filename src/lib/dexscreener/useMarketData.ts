@@ -5,12 +5,11 @@ import { fetchMarketData, type MarketResult } from "./client.ts";
 export type MarketState = { status: "not-configured" } | { status: "loading" } | MarketResult;
 
 /**
- * Market data for the platform token. Short-circuits to "not-configured"
- * while no contract address is set — no request leaves the page, and the
- * UI renders its designed placeholder state.
+ * Market data for one token. Short-circuits to "not-configured" while the
+ * address is null — no request leaves the page, and the UI renders its
+ * designed placeholder state.
  */
-export function useMarketData(): MarketState {
-  const address = external.contractAddress;
+export function useTokenMarket(address: string | null): MarketState {
   const [state, setState] = useState<MarketState>(
     isSet(address) ? { status: "loading" } : { status: "not-configured" },
   );
@@ -27,4 +26,9 @@ export function useMarketData(): MarketState {
   }, [address]);
 
   return state;
+}
+
+/** Market data for the platform token itself. */
+export function useMarketData(): MarketState {
+  return useTokenMarket(external.contractAddress);
 }

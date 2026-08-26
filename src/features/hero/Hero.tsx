@@ -4,6 +4,7 @@ import Button, { buttonClasses } from "../../components/Button.tsx";
 import { useReducedMotion } from "../../lib/useReducedMotion.ts";
 import CaBar from "./CaBar.tsx";
 import SocialLinks from "./SocialLinks.tsx";
+import MarketStrip from "./MarketStrip.tsx";
 import HowPairingWorks from "./HowPairingWorks.tsx";
 
 /* One pass through the quote categories, then rest back on the first. */
@@ -51,6 +52,9 @@ export default function Hero() {
           <div className="mt-10 flex flex-wrap items-center gap-3">
             <CaBar />
             <SocialLinks />
+          </div>
+          <div className="mt-4 max-w-xl">
+            <MarketStrip />
           </div>
         </div>
 

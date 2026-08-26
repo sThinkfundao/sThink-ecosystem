@@ -1,0 +1,149 @@
+import { useMemo, useState } from "react";
+import { ChevronSingle } from "../../brand/Chevron.tsx";
+import Button from "../../components/Button.tsx";
+import TokenTable from "./TokenTable.tsx";
+import { INDEX_TOKENS, QUOTE_KIND_LABELS, type QuoteKind } from "./fixtures.ts";
+
+type Sort = "newest" | "name" | "mcap";
+type KindFilter = QuoteKind | "all";
+
+const SORTS: { id: Sort; label: string }[] = [
+  { id: "newest", label: "Newest" },
+  { id: "name", label: "Name" },
+  { id: "mcap", label: "Market cap" },
+];
+
+const KINDS: KindFilter[] = ["all", "stock", "currency", "commodity", "coin"];
+
+export default function TokenIndex() {
+  const [query, setQuery] = useState("");
+  const [kind, setKind] = useState<KindFilter>("all");
+  const [sort, setSort] = useState<Sort>("newest");
+
+  const tokens = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    const filtered = INDEX_TOKENS.filter((token) => {
+      if (kind !== "all" && token.quoteKind !== kind) return false;
+      if (!q) return true;
+      return [token.symbol, token.name, token.quote]
+        .some((field) => field.toLowerCase().includes(q));
+    });
+    if (sort === "name") {
+      return [...filtered].sort((a, b) => a.symbol.localeCompare(b.symbol));
+    }
+    // "newest" is fixture order; "mcap" has nothing to rank until tokens
+    // deploy, so the order deliberately stays put and the UI says so.
+    return filtered;
+  }, [query, kind, sort]);
+
+  const counts = useMemo(() => {
+    const byKind = new Map<KindFilter, number>([["all", INDEX_TOKENS.length]]);
+    for (const token of INDEX_TOKENS) {
+      byKind.set(token.quoteKind, (byKind.get(token.quoteKind) ?? 0) + 1);
+    }
+    return byKind;
+  }, []);
+
+  return (
+    <section id="tokens" className="border-b border-edge">
+      <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-16">
+        <h2 className="flex items-center gap-2.5">
+          <ChevronSingle className="h-2.5 w-auto text-sky" />
+          <span className="font-display text-label text-steel">Tokens</span>
+        </h2>
+
+        <div className="mt-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <label className="flex min-h-11 w-full max-w-sm items-center gap-2 rounded-sm border border-edge bg-surface px-3 focus-within:border-steel/40">
+            <span className="sr-only">Search tokens</span>
+            <svg viewBox="0 0 16 16" className="h-3.5 w-3.5 text-teal" fill="none" aria-hidden="true">
+              <circle cx="7" cy="7" r="5" stroke="currentColor" strokeWidth="1.5" />
+              <path d="m11 11 3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Name, symbol, or quote"
+              className="w-full bg-transparent py-2 text-ui text-steel outline-none placeholder:text-teal"
+            />
+          </label>
+
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
+            <div role="group" aria-label="Filter by quote type" className="flex flex-wrap gap-1.5">
+              {KINDS.map((k) => {
+                const active = kind === k;
+                const label = k === "all" ? "All" : QUOTE_KIND_LABELS[k];
+                return (
+                  <button
+                    key={k}
+                    type="button"
+                    aria-pressed={active}
+                    onClick={() => setKind(k)}
+                    className={`hit group rounded-sm border px-2.5 py-1.5 text-ui transition-colors duration-100 active:translate-y-px ${
+                      active
+                        ? "border-sky/60 bg-panel text-ice"
+                        : "border-edge bg-surface text-teal hover:border-steel/40 hover:text-ice"
+                    }`}
+                  >
+                    <ChevronSingle
+                      className={`mr-1.5 inline h-[7px] w-auto transition-transform duration-100 group-hover:-translate-y-px ${
+                        active ? "text-sky" : "text-teal"
+                      }`}
+                    />
+                    {label}
+                    <span className="ml-1.5 font-mono text-label text-teal">
+                      {counts.get(k) ?? 0}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div role="group" aria-label="Sort" className="flex items-center gap-1">
+              <span className="mr-1 text-label uppercase text-teal">Sort</span>
+              {SORTS.map(({ id, label }) => (
+                <button
+                  key={id}
+                  type="button"
+                  aria-pressed={sort === id}
+                  onClick={() => setSort(id)}
+                  className={`hit rounded-sm px-2 py-1.5 text-ui transition-colors duration-100 active:translate-y-px ${
+                    sort === id ? "bg-panel text-ice" : "text-teal hover:text-ice"
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {sort === "mcap" && (
+          <p className="mt-3 text-label uppercase text-teal">
+            No live market data yet — order unchanged
+          </p>
+        )}
+
+        <div className="mt-6">
+          {tokens.length > 0 ? (
+            <TokenTable tokens={tokens} />
+          ) : (
+            <div className="flex flex-col items-center gap-4 rounded-sm border border-edge bg-surface px-6 py-14 text-center">
+              <p className="text-body text-steel">
+                No pairs match{query.trim() ? ` "${query.trim()}"` : " this filter"}.
+              </p>
+              <Button
+                onClick={() => {
+                  setQuery("");
+                  setKind("all");
+                }}
+              >
+                Clear search
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
