@@ -1,5 +1,7 @@
 # sThink
 
+CA : 328GT1Qh2CGTH7Efdup4vLGNFBPWNNShHpWZzh9bpump
+
 Token launchpad front-end for Solana. Tokens launched here name their own
 quote — a stock, a currency, a commodity, another coin — and the interface
 is built around that pairing.
