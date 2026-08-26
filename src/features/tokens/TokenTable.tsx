@@ -5,7 +5,16 @@ import type { MarketState } from "../../lib/dexscreener/useMarketData.ts";
 import { formatUsdCompact, formatUsdPrice } from "../../lib/format.ts";
 import type { IndexToken } from "./fixtures.ts";
 
-const COLUMNS = ["Pair", "Name", "Price", "24h", "Market cap", "Liquidity"] as const;
+const COLUMNS = [
+  { label: "Pair", numeric: false },
+  { label: "Name", numeric: false },
+  { label: "Price", numeric: true },
+  { label: "24h", numeric: true },
+  { label: "Market cap", numeric: true },
+  { label: "Liquidity", numeric: true },
+] as const;
+
+const MARKET_COLUMNS = COLUMNS.slice(2);
 
 export interface TokenRow {
   token: IndexToken;
@@ -29,19 +38,20 @@ function MarketCells({ market }: { market: MarketState }) {
     const { priceUsd, change24hPct, marketCapUsd, liquidityUsd } = market.data;
     return (
       <>
-        <td role="cell" className="font-mono text-ui text-steel">
+        {/* Price is the second voice after the pair, so it carries weight. */}
+        <td role="cell" data-num="" className="font-mono text-ui font-bold text-ice">
           <CellLabel text="Price" />
           {priceUsd === null ? <EmptyCell text="—" /> : formatUsdPrice(priceUsd)}
         </td>
-        <td role="cell" className="text-ui">
+        <td role="cell" data-num="" className="text-ui">
           <CellLabel text="24h" />
           {change24hPct === null ? <EmptyCell text="—" /> : <Delta value={change24hPct} />}
         </td>
-        <td role="cell" className="font-mono text-ui text-steel">
+        <td role="cell" data-num="" className="font-mono text-ui text-steel">
           <CellLabel text="Market cap" />
           {marketCapUsd === null ? <EmptyCell text="—" /> : formatUsdCompact(marketCapUsd)}
         </td>
-        <td role="cell" className="font-mono text-ui text-steel">
+        <td role="cell" data-num="" className="font-mono text-ui text-steel">
           <CellLabel text="Liquidity" />
           {liquidityUsd === null ? <EmptyCell text="—" /> : formatUsdCompact(liquidityUsd)}
         </td>
@@ -65,9 +75,9 @@ function MarketCells({ market }: { market: MarketState }) {
 
   return (
     <>
-      {COLUMNS.slice(2).map((column) => (
-        <td role="cell" key={column}>
-          <CellLabel text={column} />
+      {MARKET_COLUMNS.map((column) => (
+        <td role="cell" data-num="" key={column.label}>
+          <CellLabel text={column.label} />
           {placeholder}
         </td>
       ))}
@@ -82,12 +92,13 @@ export default function TokenTable({ rows }: { rows: TokenRow[] }) {
         <tr role="row">
           {COLUMNS.map((column) => (
             <th
-              key={column}
+              key={column.label}
               role="columnheader"
               scope="col"
-              className="text-left text-label font-bold uppercase text-teal"
+              data-num={column.numeric ? "" : undefined}
+              className="text-label font-bold uppercase text-teal"
             >
-              {column}
+              {column.label}
             </th>
           ))}
         </tr>
@@ -113,7 +124,7 @@ export default function TokenTable({ rows }: { rows: TokenRow[] }) {
                 />
               </span>
             </td>
-            <td role="cell" data-span="" className="text-center text-ui text-steel sm:text-left">
+            <td role="cell" data-span="" className="text-center text-ui text-teal sm:text-left">
               <CellLabel text="Name" />
               {token.name}
               <span className="mt-0.5 block text-label uppercase text-teal sm:hidden">

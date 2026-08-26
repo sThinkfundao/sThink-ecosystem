@@ -3,6 +3,8 @@ import { ChevronSingle } from "../../brand/Chevron.tsx";
 import Button from "../../components/Button.tsx";
 import { resolveMarketState, useMarketMap } from "../../lib/dexscreener/useMarketData.ts";
 import { QUOTE_KIND_LABELS, type QuoteKind } from "../../lib/quoteKinds.ts";
+import { PREVIEW_AVAILABLE, usePreviewActive } from "../../preview/previewMode.ts";
+import { sampleMarket } from "../../preview/sampleMarket.ts";
 import TokenTable, { type TokenRow } from "./TokenTable.tsx";
 import { INDEX_TOKENS } from "./fixtures.ts";
 
@@ -27,6 +29,8 @@ export default function TokenIndex() {
   const [sort, setSort] = useState<Sort>("newest");
 
   const marketResults = useMarketMap(INDEX_TOKENS.map((token) => token.address));
+  const previewActive = usePreviewActive();
+  const preview = PREVIEW_AVAILABLE && previewActive;
 
   const rows = useMemo<TokenRow[]>(() => {
     const q = query.trim().toLowerCase();
@@ -35,9 +39,11 @@ export default function TokenIndex() {
       if (!q) return true;
       return [token.symbol, token.name, token.quote]
         .some((field) => field.toLowerCase().includes(q));
-    }).map((token) => ({
+    }).map<TokenRow>((token) => ({
       token,
-      market: resolveMarketState(token.address, marketResults),
+      market: preview
+        ? { status: "ready", data: sampleMarket(token.symbol, token.quote) }
+        : resolveMarketState(token.address, marketResults),
     }));
     if (sort === "name") {
       return [...filtered].sort((a, b) => a.token.symbol.localeCompare(b.token.symbol));
@@ -48,7 +54,7 @@ export default function TokenIndex() {
       return [...filtered].sort((a, b) => mcapOf(b) - mcapOf(a));
     }
     return filtered;
-  }, [query, kind, sort, marketResults]);
+  }, [query, kind, sort, marketResults, preview]);
 
   const anyRanked = rows.some((row) => mcapOf(row) >= 0);
 
@@ -142,7 +148,7 @@ export default function TokenIndex() {
 
         <div className="mt-6">
           {rows.length > 0 ? (
-            <div className="sm:raised rounded-sm sm:overflow-hidden sm:px-1">
+            <div className="token-surface">
               <TokenTable rows={rows} />
             </div>
           ) : (
