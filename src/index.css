@@ -14,14 +14,50 @@
 
   --font-sans: "Archivo", system-ui, sans-serif;
   --font-mono: "Spline Sans Mono", ui-monospace, monospace;
+
+  /*
+   * Type scale. Line height loosens as size shrinks; tracking tightens as
+   * size grows. label is uppercase-only; display steps are for the
+   * expanded-black voice.
+   */
+  --text-label: 0.6875rem;
+  --text-label--line-height: 1rem;
+  --text-label--letter-spacing: 0.08em;
+  --text-ui: 0.8125rem;
+  --text-ui--line-height: 1.25rem;
+  --text-ui--letter-spacing: 0.005em;
+  --text-body: 0.9375rem;
+  --text-body--line-height: 1.5rem;
+  --text-title: 1.1875rem;
+  --text-title--line-height: 1.5rem;
+  --text-title--letter-spacing: -0.005em;
+  --text-display-sm: 1.75rem;
+  --text-display-sm--line-height: 1.15;
+  --text-display-sm--letter-spacing: -0.005em;
+  --text-display: 2.75rem;
+  --text-display--line-height: 1.06;
+  --text-display--letter-spacing: -0.01em;
 }
 
 @utility font-display {
   font-family: var(--font-sans);
   font-stretch: 125%;
   font-weight: 900;
-  letter-spacing: 0.01em;
   text-transform: uppercase;
+}
+
+/* Extends small controls to a 44px minimum hit area without growing them. */
+@utility hit {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: max(100%, 44px);
+    height: max(100%, 44px);
+    transform: translate(-50%, -50%);
+  }
 }
 
 body {
@@ -35,5 +71,37 @@ body {
 
 :focus-visible {
   outline: 2px solid var(--color-sky);
-  outline-offset: 2px;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+@keyframes settle-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes mark-in {
+  from {
+    opacity: 0;
+    transform: scaleY(0.5);
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

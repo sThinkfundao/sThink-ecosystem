@@ -1,4 +1,6 @@
 import { ChevronMark } from "../../brand/Chevron.tsx";
+import Button from "../../components/Button.tsx";
+import { useScrolled } from "../../lib/useScrolled.ts";
 
 interface HeaderProps {
   connectedAs: string | null;
@@ -6,37 +8,61 @@ interface HeaderProps {
 }
 
 export default function Header({ connectedAs, onWalletClick }: HeaderProps) {
+  const scrolled = useScrolled();
+
   return (
-    <header className="sticky top-0 z-40 border-b border-edge bg-ground/90 backdrop-blur-sm">
-      <div className="mx-auto flex h-14 max-w-6xl items-center gap-5 px-4 sm:gap-8 sm:px-6">
-        <a href="#top" className="flex items-center gap-2.5 text-steel transition-colors hover:text-ice">
-          <ChevronMark className="h-6 w-auto" />
-          <span className="text-[15px] font-black tracking-tight text-ice">sThink</span>
+    <header
+      className={`sticky top-0 z-40 transition-[background-color,box-shadow] duration-200 ${
+        scrolled
+          ? "border-b border-edge bg-ground/85 shadow-[0_1px_0_0_rgba(6,13,18,0.6)] backdrop-blur-md"
+          : "border-b border-transparent bg-ground"
+      }`}
+    >
+      <div
+        className={`mx-auto flex max-w-6xl items-center gap-6 px-4 transition-[height] duration-200 sm:gap-9 sm:px-6 ${
+          scrolled ? "h-14" : "h-16"
+        }`}
+      >
+        {/* The mark reads top-heavy, so it sits a hair low of true center. */}
+        <a
+          href="#top"
+          className="hit flex items-center gap-3 text-steel transition-colors hover:text-ice"
+        >
+          <ChevronMark className="h-8 w-auto translate-y-[1px]" />
+          <span className="mt-px text-[17px] font-black leading-none tracking-tight text-ice">
+            sThink
+          </span>
         </a>
 
-        <nav aria-label="Sections" className="flex items-center gap-4 text-[13px] sm:gap-6">
-          <a href="#tokens" className="text-teal transition-colors hover:text-ice">
+        <nav aria-label="Sections" className="flex items-center gap-2 sm:gap-4">
+          <a
+            href="#tokens"
+            className="hit px-1.5 py-2 text-ui text-teal transition-colors hover:text-ice"
+          >
             Tokens
           </a>
-          <a href="#launch" className="text-teal transition-colors hover:text-ice">
+          <a
+            href="#launch"
+            className="hit px-1.5 py-2 text-ui text-teal transition-colors hover:text-ice"
+          >
             Launch
           </a>
         </nav>
 
-        <button
-          type="button"
+        <Button
+          variant={connectedAs ? "secondary" : "primary"}
           onClick={onWalletClick}
-          className="ml-auto rounded-sm border border-edge bg-surface px-3 py-1.5 text-[13px] text-steel transition-colors hover:border-steel/40 hover:text-ice"
+          className="ml-auto"
         >
           {connectedAs ? (
-            <span className="flex items-center gap-2">
+            <>
               <span className="h-1.5 w-1.5 rounded-full bg-rise" aria-hidden="true" />
-              <span className="font-mono">{connectedAs}</span>
-            </span>
+              <span className="font-mono font-normal">{connectedAs}</span>
+            </>
           ) : (
             "Connect wallet"
           )}
-        </button>
+        </Button>
       </div>
     </header>
   );
