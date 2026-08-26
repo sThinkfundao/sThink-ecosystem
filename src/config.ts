@@ -25,7 +25,7 @@ export interface ExternalConfig {
 }
 
 export const external: ExternalConfig = {
-  contractAddress: null,
+  contractAddress: "328GT1Qh2CGTH7Efdup4vLGNFBPWNNShHpWZzh9bpump",
   social: {
     x: "https://x.com/sThinkfun",
   },
