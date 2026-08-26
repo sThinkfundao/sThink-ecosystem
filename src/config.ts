@@ -31,7 +31,7 @@ export const external: ExternalConfig = {
     x: "https://x.com/sThinkfun",
     telegram: null,
   },
-  repo: "https://github.com/sThinkfun/sThink-ecosystem",
+  repo: "https://github.com/sThinkfundao/sThink-ecosystem",
   docs: null,
 };
 
