@@ -25,7 +25,7 @@ renders a placeholder state for it instead of a dead link.
 The one that matters at deployment is `contractAddress`. While it is
 `null`:
 
-- the CA bar shows `xxxxxxxxxxxxpump` with copying disabled and a visible
+- the CA bar shows `328GT1Qh2CGTH7Efdup4vLGNFBPWNNShHpWZzh9bpump` with copying disabled and a visible
   "not live yet" reason,
 - the market data strip and table cells render their empty states,
 - no market data requests leave the page.
