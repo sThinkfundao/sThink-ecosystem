@@ -1,0 +1,9 @@
+node_modules/
+dist/
+*.local
+.DS_Store
+
+CLAUDE.md
+.claude/
+design-notes*.md
+DESIGN-NOTES*.md
