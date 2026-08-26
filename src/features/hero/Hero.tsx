@@ -7,6 +7,7 @@ import type { QuoteKind } from "../../lib/quoteKinds.ts";
 import CaBar from "./CaBar.tsx";
 import SocialLinks from "./SocialLinks.tsx";
 import MarketStrip from "./MarketStrip.tsx";
+import LockProof from "./LockProof.tsx";
 import HowPairingWorks from "./HowPairingWorks.tsx";
 
 /* One pass through the quote categories, then rest back on the first. */
@@ -64,6 +65,7 @@ export default function Hero() {
           </div>
           <div className="mt-4 max-w-xl">
             <MarketStrip />
+            <LockProof />
           </div>
         </div>
 

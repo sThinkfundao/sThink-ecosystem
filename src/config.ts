@@ -22,6 +22,11 @@ export interface ExternalConfig {
   };
   repo: Maybe<string>;
   docs: Maybe<string>;
+  /**
+   * Token lock proof. Amount and date are display strings copied verbatim
+   * from the lock page — never parsed, reformatted, or recomputed here.
+   */
+  lock: Maybe<{ amount: string; unlockDate: string; url: string }>;
 }
 
 export const external: ExternalConfig = {
@@ -31,6 +36,12 @@ export const external: ExternalConfig = {
   },
   repo: "https://github.com/sThinkfundao/sThink-ecosystem",
   docs: null,
+  lock: {
+    amount: "34.029M sThink",
+    // Source page states 1:00 AM GMT+8; the line shows the date only.
+    unlockDate: "Oct 3, 2026",
+    url: "https://app.streamflow.finance/contract/solana/mainnet/7uWwQX4hbB6XKAjTZ6vJu4XRNvWp2KsHn2394SsGQ6SJ",
+  },
 };
 
 /** Rendered in the CA bar while `contractAddress` is null. */
