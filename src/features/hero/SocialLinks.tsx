@@ -28,23 +28,16 @@ const ENTRIES: SocialEntry[] = [
       </svg>
     ),
   },
-  {
-    name: "Telegram",
-    url: external.social.telegram,
-    icon: (
-      <svg viewBox="0 0 24 24" fill="currentColor" className={ICON_CLASS} aria-hidden="true">
-        <path d="M23.9 3.6 20.3 20.5c-.27 1.2-.98 1.5-1.98.93l-5.48-4.04-2.64 2.55c-.29.29-.54.54-1.1.54l.39-5.58L19.5 5.7c.44-.39-.1-.61-.68-.22L6.28 13.4.9 11.72c-1.17-.37-1.19-1.17.24-1.73L22.4 2.05c.97-.36 1.82.22 1.5 1.55Z" />
-      </svg>
-    ),
-  },
 ];
 
+/* An entry whose URL is not configured yet simply doesn't render, so the
+   row never links somewhere dead. */
 export default function SocialLinks() {
   return (
     <ul className="flex items-center gap-2">
-      {ENTRIES.map(({ name, url, icon }) => (
-        <li key={name}>
-          {isSet(url) ? (
+      {ENTRIES.map(({ name, url, icon }) =>
+        isSet(url) ? (
+          <li key={name}>
             <a
               href={url}
               target="_blank"
@@ -55,20 +48,9 @@ export default function SocialLinks() {
             >
               {icon}
             </a>
-          ) : (
-            <span
-              title={`${name} — not yet available`}
-              className="flex h-8 cursor-not-allowed items-center gap-1.5 rounded-sm border border-edge/60 bg-surface/50 px-2 text-steel/40"
-            >
-              {icon}
-              <span aria-hidden="true" className="text-label uppercase">
-                soon
-              </span>
-              <span className="sr-only">{name} — not yet available</span>
-            </span>
-          )}
-        </li>
-      ))}
+          </li>
+        ) : null,
+      )}
     </ul>
   );
 }

@@ -19,7 +19,6 @@ export interface ExternalConfig {
   contractAddress: Maybe<string>;
   social: {
     x: Maybe<string>;
-    telegram: Maybe<string>;
   };
   repo: Maybe<string>;
   docs: Maybe<string>;
@@ -29,7 +28,6 @@ export const external: ExternalConfig = {
   contractAddress: null,
   social: {
     x: "https://x.com/sThinkfun",
-    telegram: null,
   },
   repo: "https://github.com/sThinkfundao/sThink-ecosystem",
   docs: null,
