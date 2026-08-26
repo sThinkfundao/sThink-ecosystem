@@ -3,7 +3,7 @@ import { ChevronSingle } from "../../brand/Chevron.tsx";
 import { PairStackVertical } from "../../brand/PairStack.tsx";
 import Button from "../../components/Button.tsx";
 import Modal from "../../components/Modal.tsx";
-import { QUOTE_KIND_LABELS, type QuoteKind } from "../tokens/fixtures.ts";
+import { QUOTE_KIND_LABELS, type QuoteKind } from "../../lib/quoteKinds.ts";
 
 const QUOTE_OPTIONS: { symbol: string; label: string; kind: QuoteKind }[] = [
   { symbol: "XAU", label: "Gold", kind: "commodity" },
@@ -82,7 +82,7 @@ export default function LaunchSection() {
                   maxLength={48}
                   aria-invalid={Boolean(errors.name)}
                   aria-describedby={errors.name ? "launch-name-error" : undefined}
-                  className="mt-1.5 block min-h-11 w-full rounded-sm border border-edge bg-surface px-3 text-ui text-steel outline-none placeholder:text-teal focus:border-steel/40"
+                  className="well mt-1.5 block min-h-11 w-full rounded-sm px-3 text-ui text-steel outline-none placeholder:text-teal focus:border-steel/40"
                   placeholder="Example token"
                 />
                 {errors.name && (
@@ -103,7 +103,7 @@ export default function LaunchSection() {
                   maxLength={10}
                   aria-invalid={Boolean(errors.symbol)}
                   aria-describedby={errors.symbol ? "launch-symbol-error" : undefined}
-                  className="mt-1.5 block min-h-11 w-full rounded-sm border border-edge bg-surface px-3 font-mono text-ui text-steel outline-none placeholder:font-sans placeholder:text-teal focus:border-steel/40"
+                  className="well mt-1.5 block min-h-11 w-full rounded-sm px-3 font-mono text-ui text-steel outline-none placeholder:font-sans placeholder:text-teal focus:border-steel/40"
                   placeholder="EXMPL"
                 />
                 {errors.symbol && (
@@ -133,10 +133,10 @@ export default function LaunchSection() {
                       type="button"
                       aria-pressed={active}
                       onClick={() => setQuote(option.symbol)}
-                      className={`group flex min-h-11 flex-col items-start rounded-sm border px-3 py-2 text-left transition-colors duration-100 active:translate-y-px ${
+                      className={`group flex min-h-11 flex-col items-start rounded-sm px-3 py-2 text-left transition-colors duration-100 active:translate-y-px ${
                         active
-                          ? "border-sky/60 bg-panel"
-                          : "border-edge bg-surface hover:border-steel/40"
+                          ? "raised-2 outline outline-1 -outline-offset-1 outline-sky/60"
+                          : "raised hover:border-steel/40"
                       }`}
                     >
                       <span className="flex items-center gap-1.5 font-mono text-ui font-bold text-sky">
@@ -171,8 +171,12 @@ export default function LaunchSection() {
 
           <aside aria-label="Launch preview" className="lg:border-l lg:border-edge lg:pl-10">
             <h3 className="text-label font-bold uppercase text-teal">Your pair</h3>
-            <div className="mt-5 flex justify-center rounded-sm border border-edge bg-surface px-6 py-8">
-              <PairStackVertical base={previewSymbol} quote={quote ?? "?"} />
+            <div className="raised mt-5 flex justify-center rounded-sm px-6 py-8">
+              <PairStackVertical
+                base={previewSymbol}
+                quote={quote ?? "?"}
+                kind={quoteOption?.kind ?? null}
+              />
             </div>
             <dl className="mt-5 space-y-2.5 text-ui">
               <div className="flex justify-between gap-4">
@@ -204,8 +208,12 @@ export default function LaunchSection() {
           <p className="mt-1.5 text-ui text-teal">
             This is what would happen when deployment goes live:
           </p>
-          <div className="mt-5 flex justify-center rounded-sm border border-edge bg-surface px-6 py-7">
-            <PairStackVertical base={previewSymbol} quote={quote ?? "?"} />
+          <div className="raised mt-5 flex justify-center rounded-sm px-6 py-7">
+            <PairStackVertical
+              base={previewSymbol}
+              quote={quote ?? "?"}
+              kind={quoteOption?.kind ?? null}
+            />
           </div>
           <ul className="mt-5 space-y-2 text-ui text-steel">
             <li>

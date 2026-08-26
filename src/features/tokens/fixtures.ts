@@ -4,7 +4,7 @@
  * replace these when launches go live; order is newest first.
  */
 
-export type QuoteKind = "stock" | "currency" | "commodity" | "coin";
+import type { QuoteKind } from "../../lib/quoteKinds.ts";
 
 export interface IndexToken {
   symbol: string;
@@ -14,13 +14,6 @@ export interface IndexToken {
   /** Mint address once the token is real; null renders "not live yet". */
   address: string | null;
 }
-
-export const QUOTE_KIND_LABELS: Record<QuoteKind, string> = {
-  stock: "Stocks",
-  currency: "Currencies",
-  commodity: "Commodities",
-  coin: "Coins",
-};
 
 export const INDEX_TOKENS: IndexToken[] = [
   { symbol: "EXMPL", name: "Example token", quote: "XAU", quoteKind: "commodity", address: null },

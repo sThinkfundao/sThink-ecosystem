@@ -26,6 +26,7 @@ export function normalizePair(pair: DexPair): MarketData {
     liquidityUsd: parseNumeric(pair.liquidity?.usd),
     volume24hUsd: parseNumeric(pair.volume?.h24),
     change24hPct: parseNumeric(pair.priceChange?.h24),
+    imageUrl: pair.info?.imageUrl ?? null,
     pairUrl: pair.url,
     fetchedAt: Date.now(),
   };

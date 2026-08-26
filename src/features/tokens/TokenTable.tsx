@@ -1,7 +1,8 @@
 import { PairInline, PairStackVertical } from "../../brand/PairStack.tsx";
 import ChevronLoader from "../../brand/ChevronLoader.tsx";
+import Delta from "../../components/Delta.tsx";
 import type { MarketState } from "../../lib/dexscreener/useMarketData.ts";
-import { formatPct, formatUsdCompact, formatUsdPrice } from "../../lib/format.ts";
+import { formatUsdCompact, formatUsdPrice } from "../../lib/format.ts";
 import type { IndexToken } from "./fixtures.ts";
 
 const COLUMNS = ["Pair", "Name", "Price", "24h", "Market cap", "Liquidity"] as const;
@@ -26,17 +27,15 @@ function EmptyCell({ text = "not live yet" }: { text?: string }) {
 function MarketCells({ market }: { market: MarketState }) {
   if (market.status === "ready") {
     const { priceUsd, change24hPct, marketCapUsd, liquidityUsd } = market.data;
-    const changeColor =
-      change24hPct === null ? "text-steel" : change24hPct >= 0 ? "text-rise" : "text-fall";
     return (
       <>
         <td role="cell" className="font-mono text-ui text-steel">
           <CellLabel text="Price" />
           {priceUsd === null ? <EmptyCell text="—" /> : formatUsdPrice(priceUsd)}
         </td>
-        <td role="cell" className={`font-mono text-ui ${changeColor}`}>
+        <td role="cell" className="text-ui">
           <CellLabel text="24h" />
-          {change24hPct === null ? <EmptyCell text="—" /> : formatPct(change24hPct)}
+          {change24hPct === null ? <EmptyCell text="—" /> : <Delta value={change24hPct} />}
         </td>
         <td role="cell" className="font-mono text-ui text-steel">
           <CellLabel text="Market cap" />
@@ -98,10 +97,20 @@ export default function TokenTable({ rows }: { rows: TokenRow[] }) {
           <tr role="row" key={token.symbol}>
             <td role="cell" data-span="">
               <span className="hidden sm:inline-flex">
-                <PairInline base={token.symbol} quote={token.quote} />
+                <PairInline
+                  base={token.symbol}
+                  quote={token.quote}
+                  kind={token.quoteKind}
+                  baseImageUrl={market.status === "ready" ? market.data.imageUrl : null}
+                />
               </span>
               <span className="flex justify-center py-1 sm:hidden">
-                <PairStackVertical base={token.symbol} quote={token.quote} />
+                <PairStackVertical
+                  base={token.symbol}
+                  quote={token.quote}
+                  kind={token.quoteKind}
+                  baseImageUrl={market.status === "ready" ? market.data.imageUrl : null}
+                />
               </span>
             </td>
             <td role="cell" data-span="" className="text-center text-ui text-steel sm:text-left">

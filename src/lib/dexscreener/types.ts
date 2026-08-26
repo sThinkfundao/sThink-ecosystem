@@ -27,6 +27,9 @@ export interface DexPair {
   } | null;
   volume?: Record<string, number> | null;
   priceChange?: Record<string, number> | null;
+  info?: {
+    imageUrl?: string | null;
+  } | null;
 }
 
 /** What the UI consumes; one place normalizes the API shape into this. */
@@ -38,6 +41,7 @@ export interface MarketData {
   liquidityUsd: number | null;
   volume24hUsd: number | null;
   change24hPct: number | null;
+  imageUrl: string | null;
   pairUrl: string;
   fetchedAt: number;
 }

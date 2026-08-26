@@ -2,8 +2,9 @@ import { useMemo, useState } from "react";
 import { ChevronSingle } from "../../brand/Chevron.tsx";
 import Button from "../../components/Button.tsx";
 import { resolveMarketState, useMarketMap } from "../../lib/dexscreener/useMarketData.ts";
+import { QUOTE_KIND_LABELS, type QuoteKind } from "../../lib/quoteKinds.ts";
 import TokenTable, { type TokenRow } from "./TokenTable.tsx";
-import { INDEX_TOKENS, QUOTE_KIND_LABELS, type QuoteKind } from "./fixtures.ts";
+import { INDEX_TOKENS } from "./fixtures.ts";
 
 type Sort = "newest" | "name" | "mcap";
 type KindFilter = QuoteKind | "all";
@@ -68,7 +69,7 @@ export default function TokenIndex() {
         </h2>
 
         <div className="mt-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <label className="flex min-h-11 w-full max-w-sm items-center gap-2 rounded-sm border border-edge bg-surface px-3 focus-within:border-steel/40">
+          <label className="well flex min-h-11 w-full max-w-sm items-center gap-2 rounded-sm px-3 focus-within:border-steel/40">
             <span className="sr-only">Search tokens</span>
             <svg viewBox="0 0 16 16" className="h-3.5 w-3.5 text-teal" fill="none" aria-hidden="true">
               <circle cx="7" cy="7" r="5" stroke="currentColor" strokeWidth="1.5" />
@@ -94,10 +95,10 @@ export default function TokenIndex() {
                     type="button"
                     aria-pressed={active}
                     onClick={() => setKind(k)}
-                    className={`hit group rounded-sm border px-2.5 py-1.5 text-ui transition-colors duration-100 active:translate-y-px ${
+                    className={`hit group rounded-sm px-2.5 py-1.5 text-ui transition-colors duration-100 active:translate-y-px ${
                       active
-                        ? "border-sky/60 bg-panel text-ice"
-                        : "border-edge bg-surface text-teal hover:border-steel/40 hover:text-ice"
+                        ? "raised-2 text-ice outline outline-1 -outline-offset-1 outline-sky/60"
+                        : "raised text-teal hover:border-steel/40 hover:text-ice"
                     }`}
                   >
                     <ChevronSingle
@@ -141,9 +142,11 @@ export default function TokenIndex() {
 
         <div className="mt-6">
           {rows.length > 0 ? (
-            <TokenTable rows={rows} />
+            <div className="sm:raised rounded-sm sm:overflow-hidden sm:px-1">
+              <TokenTable rows={rows} />
+            </div>
           ) : (
-            <div className="flex flex-col items-center gap-4 rounded-sm border border-edge bg-surface px-6 py-14 text-center">
+            <div className="raised flex flex-col items-center gap-4 rounded-sm px-6 py-14 text-center">
               <p className="text-body text-steel">
                 No tokens match{query.trim() ? ` "${query.trim()}"` : " this combination"}.
               </p>
