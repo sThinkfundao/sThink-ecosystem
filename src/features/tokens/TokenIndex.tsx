@@ -86,12 +86,12 @@ export default function TokenIndex() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Name, symbol, or quote"
-              className="w-full bg-transparent py-2 text-ui text-steel outline-none placeholder:text-teal"
+              className="min-h-11 w-full bg-transparent text-ui text-steel outline-none placeholder:text-teal"
             />
           </label>
 
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
-            <div role="group" aria-label="Filter by quote type" className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
+            <div role="group" aria-label="Filter by quote type" className="flex flex-wrap gap-2">
               {KINDS.map((k) => {
                 const active = kind === k;
                 const label = k === "all" ? "All" : QUOTE_KIND_LABELS[k];
@@ -121,7 +121,7 @@ export default function TokenIndex() {
               })}
             </div>
 
-            <div role="group" aria-label="Sort" className="flex items-center gap-1">
+            <div role="group" aria-label="Sort" className="flex items-center gap-2">
               <span className="mr-1 text-label uppercase text-teal">Sort</span>
               {SORTS.map(({ id, label }) => (
                 <button
@@ -129,7 +129,7 @@ export default function TokenIndex() {
                   type="button"
                   aria-pressed={sort === id}
                   onClick={() => setSort(id)}
-                  className={`hit rounded-sm px-2 py-1.5 text-ui transition-colors duration-100 active:translate-y-px ${
+                  className={`hit rounded-sm px-3 py-2 text-ui transition-colors duration-100 active:translate-y-px ${
                     sort === id ? "bg-panel text-ice" : "text-teal hover:text-ice"
                   }`}
                 >

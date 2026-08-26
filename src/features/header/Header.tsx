@@ -19,8 +19,8 @@ export default function Header({ connectedAs, onWalletClick }: HeaderProps) {
       }`}
     >
       <div
-        className={`mx-auto flex max-w-6xl items-center gap-6 px-4 transition-[height] duration-200 sm:gap-9 sm:px-6 ${
-          scrolled ? "h-14" : "h-16"
+        className={`mx-auto flex max-w-6xl items-center gap-2 px-4 transition-[height] duration-200 sm:gap-9 sm:px-6 ${
+          scrolled ? "h-12 sm:h-14" : "h-14 sm:h-16"
         }`}
       >
         {/* The mark reads top-heavy, so it sits a hair low of true center. */}
@@ -37,30 +37,38 @@ export default function Header({ connectedAs, onWalletClick }: HeaderProps) {
         <nav aria-label="Sections" className="flex items-center gap-2 sm:gap-4">
           <a
             href="#tokens"
-            className="hit px-1.5 py-2 text-ui text-teal transition-colors hover:text-ice"
+            className="hit px-1 py-2 text-ui text-teal transition-colors hover:text-ice sm:px-1.5"
           >
             Tokens
           </a>
           <a
             href="#launch"
-            className="hit px-1.5 py-2 text-ui text-teal transition-colors hover:text-ice"
+            className="hit px-1 py-2 text-ui text-teal transition-colors hover:text-ice sm:px-1.5"
           >
             Launch
           </a>
         </nav>
 
+        {/* The row must never push past the gutter, so the button cannot shrink
+            and its label shortens before the layout would break. */}
         <Button
           variant={connectedAs ? "secondary" : "primary"}
           onClick={onWalletClick}
-          className="ml-auto"
+          className="ml-auto shrink-0 max-sm:px-3"
         >
           {connectedAs ? (
             <>
               <span className="h-1.5 w-1.5 rounded-full bg-rise" aria-hidden="true" />
-              <span className="font-mono font-normal">{connectedAs}</span>
+              <span className="max-w-[6rem] truncate font-mono font-normal sm:max-w-none">
+                {connectedAs}
+                <span className="hidden sm:inline"> · demo</span>
+              </span>
             </>
           ) : (
-            "Connect wallet"
+            <>
+              <span className="sm:hidden">Connect</span>
+              <span className="hidden sm:inline">Connect wallet</span>
+            </>
           )}
         </Button>
       </div>

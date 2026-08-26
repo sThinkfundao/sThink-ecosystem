@@ -27,7 +27,20 @@ export default function CaBar() {
   return (
     <div className="raised flex min-h-11 flex-wrap items-center gap-x-3 gap-y-1 rounded-sm px-3 py-2">
       <span className="text-label font-bold uppercase text-teal">CA</span>
-      <span className="font-mono text-ui text-steel" title={live ? address : undefined}>
+      {/*
+       * A mint is 44 characters and will not fit one phone line, so on a
+       * phone it wraps and stays readable in full; the desktop bar keeps the
+       * head-and-tail form it was reviewed with.
+       */}
+      <span
+        className="min-w-0 font-mono text-[0.8125rem] leading-5 text-steel [overflow-wrap:anywhere] sm:hidden"
+      >
+        {live ? address : CA_PLACEHOLDER}
+      </span>
+      <span
+        className="hidden font-mono text-ui text-steel sm:inline"
+        title={live ? address : undefined}
+      >
         {live ? truncate(address) : CA_PLACEHOLDER}
       </span>
       <button

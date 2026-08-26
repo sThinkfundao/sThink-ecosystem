@@ -35,6 +35,7 @@ export default function Hero() {
   }, [step, reducedMotion]);
 
   const active = RAIL[step] ?? QUOTES[0]!;
+  const rested = reducedMotion || step >= QUOTES.length;
 
   return (
     <section className="border-b border-edge">
@@ -80,7 +81,17 @@ export default function Hero() {
                 EXAMPLE
               </span>
             </span>
-            <ChevronMark className="my-5 h-12 w-auto animate-[mark-in_0.6s_ease-out_0.15s_both] text-steel" />
+            {/* After the one orchestrated pass the mark keeps a quiet idle drift,
+                so the pairing still reads as alive; reduced motion stills it. */}
+            <ChevronMark
+              className={`my-5 h-12 w-auto text-steel ${
+                reducedMotion
+                  ? ""
+                  : rested
+                    ? "animate-[chevron-idle_3.8s_ease-in-out_infinite]"
+                    : "animate-[mark-in_0.6s_ease-out_0.15s_both]"
+              }`}
+            />
             <div
               className="w-full overflow-hidden animate-[rise-in_0.45s_ease-out_0.3s_both] [mask-image:linear-gradient(to_bottom,black_45%,transparent_96%)]"
               style={{ height: `${ROW_HEIGHT_REM * 2.5}rem` }}

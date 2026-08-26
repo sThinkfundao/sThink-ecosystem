@@ -15,7 +15,7 @@ export default function App() {
   return (
     <div id="top" className="min-h-screen">
       <Header
-        connectedAs={connectedAs ? `${connectedAs} · demo` : null}
+        connectedAs={connectedAs}
         onWalletClick={() => setWalletOpen(true)}
       />
       <main>

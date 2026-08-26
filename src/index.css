@@ -85,17 +85,23 @@
   box-shadow: inset 0 1px 3px rgba(2, 6, 9, 0.55);
 }
 
-/* Extends small controls to a 44px minimum hit area without growing them. */
+/*
+ * Touch targets. On a touch device or a phone-width screen the control is
+ * really 44px, not a transparent overlay over a smaller one — overlapping
+ * invisible hit areas are how neighbouring controls steal each other's taps.
+ */
 @utility hit {
-  position: relative;
-  &::after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: max(100%, 44px);
-    height: max(100%, 44px);
-    transform: translate(-50%, -50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@layer components {
+  @media (pointer: coarse), (width < 40rem) {
+    .hit {
+      min-height: 44px;
+      min-width: 44px;
+    }
   }
 }
 
@@ -156,6 +162,19 @@ body:has(dialog[open]) {
   }
 }
 
+/* The hero mark's idle: a slow breath, starting and ending at rest. */
+@keyframes chevron-idle {
+  0%,
+  100% {
+    transform: none;
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-3px);
+    opacity: 0.88;
+  }
+}
+
 @keyframes loader-drop {
   0%,
   100% {
@@ -197,32 +216,86 @@ body:has(dialog[open]) {
     clip-path: inset(50%);
     white-space: nowrap;
   }
-  .token-table tbody {
-    display: grid;
-    gap: calc(var(--spacing) * 3);
-  }
-  .token-table tr {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: calc(var(--spacing) * 2) calc(var(--spacing) * 4);
-    border: 1px solid var(--color-edge);
-    border-radius: var(--radius-sm);
-    background: var(--color-surface);
-    padding: calc(var(--spacing) * 4);
-    box-shadow:
-      inset 0 1px 0 rgba(204, 242, 253, 0.05),
-      0 1px 2px rgba(2, 6, 9, 0.5),
-      0 2px 8px rgba(2, 6, 9, 0.25);
-  }
-  .token-table td {
-    display: block;
-  }
-  .token-table td[data-span] {
-    grid-column: 1 / -1;
-  }
-  .token-table .cell-label {
-    display: block;
-    margin-bottom: calc(var(--spacing) * 0.5);
+  @media (width < 40rem) {
+    .token-table tbody {
+      display: grid;
+      gap: calc(var(--spacing) * 2.5);
+    }
+    /*
+     * Phone card. Identity holds the left, the two numbers that decide whether
+     * you tap sit on the right, and the slower figures drop to a footer rule.
+     * Reading order is pair, price, change, then the rest.
+     */
+    .token-table tr {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-areas:
+        "pair  price"
+        "name  change"
+        "mcap  liq";
+      column-gap: calc(var(--spacing) * 3);
+      align-items: baseline;
+      border: 1px solid var(--color-edge);
+      border-radius: var(--radius-sm);
+      background: var(--color-surface);
+      padding: calc(var(--spacing) * 3.5);
+      box-shadow:
+        inset 0 1px 0 rgba(204, 242, 253, 0.05),
+        0 1px 2px rgba(2, 6, 9, 0.5),
+        0 2px 8px rgba(2, 6, 9, 0.25);
+    }
+    .token-table td {
+      display: block;
+      min-width: 0;
+    }
+    .token-table td:nth-child(1) {
+      grid-area: pair;
+    }
+    .token-table td:nth-child(2) {
+      grid-area: name;
+      padding-top: calc(var(--spacing) * 1);
+    }
+    .token-table td:nth-child(3) {
+      grid-area: price;
+      text-align: right;
+    }
+    .token-table td:nth-child(4) {
+      grid-area: change;
+      padding-top: calc(var(--spacing) * 1);
+      text-align: right;
+    }
+    .token-table td:nth-child(5) {
+      grid-area: mcap;
+    }
+    .token-table td:nth-child(6) {
+      grid-area: liq;
+      text-align: right;
+    }
+    /* The footer figures share one rule and read as label-then-value inline. */
+    .token-table td:nth-child(5),
+    .token-table td:nth-child(6) {
+      margin-top: calc(var(--spacing) * 3);
+      padding-top: calc(var(--spacing) * 2.5);
+      border-top: 1px solid var(--color-edge);
+    }
+    .token-table td:nth-child(5) .cell-label,
+    .token-table td:nth-child(6) .cell-label {
+      display: inline;
+      margin-right: calc(var(--spacing) * 1.5);
+    }
+    .token-table .cell-label {
+      display: block;
+      margin-bottom: calc(var(--spacing) * 0.5);
+    }
+    /*
+     * Price, change and name label themselves by position and by the pair
+     * beside them; repeating the words is what turned the card into a slab.
+     */
+    .token-table td:nth-child(2) .cell-label,
+    .token-table td:nth-child(3) .cell-label,
+    .token-table td:nth-child(4) .cell-label {
+      display: none;
+    }
   }
 
   /* Numeric columns align left in cards, right in the table. */

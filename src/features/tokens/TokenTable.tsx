@@ -1,4 +1,4 @@
-import { PairInline, PairStackVertical } from "../../brand/PairStack.tsx";
+import { PairInline } from "../../brand/PairStack.tsx";
 import ChevronLoader from "../../brand/ChevronLoader.tsx";
 import Delta from "../../components/Delta.tsx";
 import type { MarketState } from "../../lib/dexscreener/useMarketData.ts";
@@ -6,12 +6,13 @@ import { formatUsdCompact, formatUsdPrice } from "../../lib/format.ts";
 import type { IndexToken } from "./fixtures.ts";
 
 const COLUMNS = [
-  { label: "Pair", numeric: false },
-  { label: "Name", numeric: false },
-  { label: "Price", numeric: true },
-  { label: "24h", numeric: true },
-  { label: "Market cap", numeric: true },
-  { label: "Liquidity", numeric: true },
+  { label: "Pair", numeric: false, short: "Pair" },
+  { label: "Name", numeric: false, short: "Name" },
+  { label: "Price", numeric: true, short: "Price" },
+  { label: "24h", numeric: true, short: "24h" },
+  // Phone cards carry the footer labels inline, where the full words wrap.
+  { label: "Market cap", numeric: true, short: "MCAP" },
+  { label: "Liquidity", numeric: true, short: "LIQ" },
 ] as const;
 
 const MARKET_COLUMNS = COLUMNS.slice(2);
@@ -21,6 +22,7 @@ export interface TokenRow {
   market: MarketState;
 }
 
+/* Only ever visible in the phone card; the desktop table has real headers. */
 function CellLabel({ text }: { text: string }) {
   return (
     <span aria-hidden="true" className="cell-label text-label uppercase text-teal">
@@ -30,7 +32,9 @@ function CellLabel({ text }: { text: string }) {
 }
 
 function EmptyCell({ text = "not live yet" }: { text?: string }) {
-  return <span className="text-label uppercase text-teal">{text}</span>;
+  // Kept on one line: a wrapped "not live / yet" reads as a broken value
+  // rather than a deliberate state, and it made empty rows taller than live ones.
+  return <span className="whitespace-nowrap text-label uppercase text-teal">{text}</span>;
 }
 
 function MarketCells({ market }: { market: MarketState }) {
@@ -39,7 +43,7 @@ function MarketCells({ market }: { market: MarketState }) {
     return (
       <>
         {/* Price is the second voice after the pair, so it carries weight. */}
-        <td role="cell" data-num="" className="font-mono text-ui font-bold text-ice">
+        <td role="cell" data-num="" className="font-mono text-base font-bold text-ice sm:text-ui">
           <CellLabel text="Price" />
           {priceUsd === null ? <EmptyCell text="—" /> : formatUsdPrice(priceUsd)}
         </td>
@@ -48,11 +52,11 @@ function MarketCells({ market }: { market: MarketState }) {
           {change24hPct === null ? <EmptyCell text="—" /> : <Delta value={change24hPct} />}
         </td>
         <td role="cell" data-num="" className="font-mono text-ui text-steel">
-          <CellLabel text="Market cap" />
+          <CellLabel text="MCAP" />
           {marketCapUsd === null ? <EmptyCell text="—" /> : formatUsdCompact(marketCapUsd)}
         </td>
         <td role="cell" data-num="" className="font-mono text-ui text-steel">
-          <CellLabel text="Liquidity" />
+          <CellLabel text="LIQ" />
           {liquidityUsd === null ? <EmptyCell text="—" /> : formatUsdCompact(liquidityUsd)}
         </td>
       </>
@@ -77,7 +81,7 @@ function MarketCells({ market }: { market: MarketState }) {
     <>
       {MARKET_COLUMNS.map((column) => (
         <td role="cell" data-num="" key={column.label}>
-          <CellLabel text={column.label} />
+          <CellLabel text={column.short} />
           {placeholder}
         </td>
       ))}
@@ -106,30 +110,17 @@ export default function TokenTable({ rows }: { rows: TokenRow[] }) {
       <tbody role="rowgroup">
         {rows.map(({ token, market }) => (
           <tr role="row" key={token.symbol}>
-            <td role="cell" data-span="">
-              <span className="hidden sm:inline-flex">
-                <PairInline
-                  base={token.symbol}
-                  quote={token.quote}
-                  kind={token.quoteKind}
-                  baseImageUrl={market.status === "ready" ? market.data.imageUrl : null}
-                />
-              </span>
-              <span className="flex justify-center py-1 sm:hidden">
-                <PairStackVertical
-                  base={token.symbol}
-                  quote={token.quote}
-                  kind={token.quoteKind}
-                  baseImageUrl={market.status === "ready" ? market.data.imageUrl : null}
-                />
-              </span>
+            <td role="cell">
+              <PairInline
+                base={token.symbol}
+                quote={token.quote}
+                kind={token.quoteKind}
+                baseImageUrl={market.status === "ready" ? market.data.imageUrl : null}
+              />
             </td>
-            <td role="cell" data-span="" className="text-center text-ui text-teal sm:text-left">
+            <td role="cell" className="truncate text-ui text-teal">
               <CellLabel text="Name" />
               {token.name}
-              <span className="mt-0.5 block text-label uppercase text-teal sm:hidden">
-                {token.quoteKind} pair
-              </span>
             </td>
             <MarketCells market={market} />
           </tr>
