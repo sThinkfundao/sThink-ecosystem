@@ -92,6 +92,9 @@ export default function WalletModal({
         {!selected && !connectedAs && (
           <p className="mt-2.5 text-label uppercase text-teal">Pick a wallet to continue</p>
         )}
+        {connectedAs && selected === connectedAs && (
+          <p className="mt-2.5 text-label uppercase text-teal">Pick a different wallet to switch</p>
+        )}
       </div>
     </Modal>
   );

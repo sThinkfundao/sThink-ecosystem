@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
 import { ChevronSingle } from "../../brand/Chevron.tsx";
 import Button from "../../components/Button.tsx";
-import TokenTable from "./TokenTable.tsx";
+import { resolveMarketState, useMarketMap } from "../../lib/dexscreener/useMarketData.ts";
+import TokenTable, { type TokenRow } from "./TokenTable.tsx";
 import { INDEX_TOKENS, QUOTE_KIND_LABELS, type QuoteKind } from "./fixtures.ts";
 
 type Sort = "newest" | "name" | "mcap";
@@ -15,26 +16,40 @@ const SORTS: { id: Sort; label: string }[] = [
 
 const KINDS: KindFilter[] = ["all", "stock", "currency", "commodity", "coin"];
 
+function mcapOf(row: TokenRow): number {
+  return row.market.status === "ready" ? (row.market.data.marketCapUsd ?? -1) : -1;
+}
+
 export default function TokenIndex() {
   const [query, setQuery] = useState("");
   const [kind, setKind] = useState<KindFilter>("all");
   const [sort, setSort] = useState<Sort>("newest");
 
-  const tokens = useMemo(() => {
+  const marketResults = useMarketMap(INDEX_TOKENS.map((token) => token.address));
+
+  const rows = useMemo<TokenRow[]>(() => {
     const q = query.trim().toLowerCase();
     const filtered = INDEX_TOKENS.filter((token) => {
       if (kind !== "all" && token.quoteKind !== kind) return false;
       if (!q) return true;
       return [token.symbol, token.name, token.quote]
         .some((field) => field.toLowerCase().includes(q));
-    });
+    }).map((token) => ({
+      token,
+      market: resolveMarketState(token.address, marketResults),
+    }));
     if (sort === "name") {
-      return [...filtered].sort((a, b) => a.symbol.localeCompare(b.symbol));
+      return [...filtered].sort((a, b) => a.token.symbol.localeCompare(b.token.symbol));
     }
-    // "newest" is fixture order; "mcap" has nothing to rank until tokens
-    // deploy, so the order deliberately stays put and the UI says so.
+    if (sort === "mcap") {
+      // Stable sort: rows without market data keep fixture order below
+      // ranked ones, which is the whole list until tokens deploy.
+      return [...filtered].sort((a, b) => mcapOf(b) - mcapOf(a));
+    }
     return filtered;
-  }, [query, kind, sort]);
+  }, [query, kind, sort, marketResults]);
+
+  const anyRanked = rows.some((row) => mcapOf(row) >= 0);
 
   const counts = useMemo(() => {
     const byKind = new Map<KindFilter, number>([["all", INDEX_TOKENS.length]]);
@@ -118,19 +133,19 @@ export default function TokenIndex() {
           </div>
         </div>
 
-        {sort === "mcap" && (
+        {sort === "mcap" && !anyRanked && (
           <p className="mt-3 text-label uppercase text-teal">
             No live market data yet — order unchanged
           </p>
         )}
 
         <div className="mt-6">
-          {tokens.length > 0 ? (
-            <TokenTable tokens={tokens} />
+          {rows.length > 0 ? (
+            <TokenTable rows={rows} />
           ) : (
             <div className="flex flex-col items-center gap-4 rounded-sm border border-edge bg-surface px-6 py-14 text-center">
               <p className="text-body text-steel">
-                No pairs match{query.trim() ? ` "${query.trim()}"` : " this filter"}.
+                No tokens match{query.trim() ? ` "${query.trim()}"` : " this combination"}.
               </p>
               <Button
                 onClick={() => {
@@ -138,7 +153,7 @@ export default function TokenIndex() {
                   setKind("all");
                 }}
               >
-                Clear search
+                Show all tokens
               </Button>
             </div>
           )}

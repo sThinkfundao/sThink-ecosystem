@@ -75,6 +75,10 @@ body {
   border-radius: 2px;
 }
 
+body:has(dialog[open]) {
+  overflow: hidden;
+}
+
 @keyframes settle-in {
   from {
     opacity: 0;
@@ -135,6 +139,7 @@ body {
     height: 1px;
     overflow: hidden;
     clip-path: inset(50%);
+    white-space: nowrap;
   }
   .token-table tbody {
     display: grid;
@@ -171,6 +176,7 @@ body {
       width: auto;
       height: auto;
       clip-path: none;
+      white-space: normal;
     }
     .token-table tbody {
       display: table-row-group;

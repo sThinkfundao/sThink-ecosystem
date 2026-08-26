@@ -25,7 +25,7 @@ interface FormErrors {
 function validate(name: string, symbol: string, quote: string | null): FormErrors {
   const errors: FormErrors = {};
   if (name.trim().length === 0) errors.name = "Give the token a name.";
-  else if (name.trim().length > 32) errors.name = "Keep the name under 32 characters.";
+  else if (name.trim().length > 32) errors.name = "Keep the name to 32 characters or fewer.";
   if (symbol.trim().length < 2) errors.symbol = "Symbol needs 2 to 10 characters.";
   else if (!/^[A-Z0-9]{2,10}$/.test(symbol.trim())) {
     errors.symbol = "Uppercase letters and digits only.";
@@ -48,7 +48,16 @@ export default function LaunchSection() {
     event.preventDefault();
     const next = validate(name, symbol, quote);
     setErrors(next);
-    if (Object.keys(next).length === 0) setSubmitted(true);
+    if (Object.keys(next).length === 0) {
+      setSubmitted(true);
+      return;
+    }
+    const firstInvalid = next.name
+      ? "launch-name"
+      : next.symbol
+        ? "launch-symbol"
+        : "launch-quote-group";
+    document.getElementById(firstInvalid)?.focus();
   }
 
   return (
@@ -105,10 +114,17 @@ export default function LaunchSection() {
               </div>
             </div>
 
-            <fieldset className="mt-6">
+            <fieldset
+              className="mt-6"
+              aria-describedby={errors.quote ? "launch-quote-error" : undefined}
+            >
               <legend className="text-label font-bold uppercase text-teal">Quote</legend>
               <p className="mt-1 text-ui text-teal">What the token trades against.</p>
-              <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+              <div
+                id="launch-quote-group"
+                tabIndex={-1}
+                className="mt-3 grid grid-cols-2 gap-2 outline-none sm:grid-cols-4"
+              >
                 {QUOTE_OPTIONS.map((option) => {
                   const active = quote === option.symbol;
                   return (
@@ -138,7 +154,11 @@ export default function LaunchSection() {
                   );
                 })}
               </div>
-              {errors.quote && <p className="mt-2 text-ui text-fall">{errors.quote}</p>}
+              {errors.quote && (
+                <p id="launch-quote-error" className="mt-2 text-ui text-fall">
+                  {errors.quote}
+                </p>
+              )}
             </fieldset>
 
             <div className="mt-7 flex flex-wrap items-center gap-4">

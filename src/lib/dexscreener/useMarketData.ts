@@ -5,30 +5,41 @@ import { fetchMarketData, type MarketResult } from "./client.ts";
 export type MarketState = { status: "not-configured" } | { status: "loading" } | MarketResult;
 
 /**
- * Market data for one token. Short-circuits to "not-configured" while the
- * address is null — no request leaves the page, and the UI renders its
- * designed placeholder state.
+ * Market data for a set of token addresses, keyed by address. Null
+ * addresses are skipped — no request leaves the page for them — and the
+ * caller renders "not-configured". Entries are "loading" until resolved.
  */
-export function useTokenMarket(address: string | null): MarketState {
-  const [state, setState] = useState<MarketState>(
-    isSet(address) ? { status: "loading" } : { status: "not-configured" },
-  );
+export function useMarketMap(addresses: (string | null)[]): Map<string, MarketResult> {
+  const [results, setResults] = useState<Map<string, MarketResult>>(new Map());
+  const key = addresses.filter(isSet).join(",");
 
   useEffect(() => {
-    if (!isSet(address)) return;
+    if (!key) return;
     let cancelled = false;
-    void fetchMarketData(address).then((result) => {
-      if (!cancelled) setState(result);
-    });
+    for (const address of key.split(",")) {
+      void fetchMarketData(address).then((result) => {
+        if (!cancelled) setResults((prev) => new Map(prev).set(address, result));
+      });
+    }
     return () => {
       cancelled = true;
     };
-  }, [address]);
+  }, [key]);
 
-  return state;
+  return results;
+}
+
+export function resolveMarketState(
+  address: string | null,
+  results: Map<string, MarketResult>,
+): MarketState {
+  if (!isSet(address)) return { status: "not-configured" };
+  return results.get(address) ?? { status: "loading" };
 }
 
 /** Market data for the platform token itself. */
 export function useMarketData(): MarketState {
-  return useTokenMarket(external.contractAddress);
+  const address = external.contractAddress;
+  const results = useMarketMap([address]);
+  return resolveMarketState(address, results);
 }

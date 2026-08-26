@@ -1,18 +1,29 @@
 import { PairInline, PairStackVertical } from "../../brand/PairStack.tsx";
 import ChevronLoader from "../../brand/ChevronLoader.tsx";
-import { useTokenMarket } from "../../lib/dexscreener/useMarketData.ts";
+import type { MarketState } from "../../lib/dexscreener/useMarketData.ts";
 import { formatPct, formatUsdCompact, formatUsdPrice } from "../../lib/format.ts";
-import { QUOTE_KIND_LABELS, type IndexToken } from "./fixtures.ts";
+import type { IndexToken } from "./fixtures.ts";
 
 const COLUMNS = ["Pair", "Name", "Price", "24h", "Market cap", "Liquidity"] as const;
+
+export interface TokenRow {
+  token: IndexToken;
+  market: MarketState;
+}
+
+function CellLabel({ text }: { text: string }) {
+  return (
+    <span aria-hidden="true" className="cell-label text-label uppercase text-teal">
+      {text}
+    </span>
+  );
+}
 
 function EmptyCell({ text = "not live yet" }: { text?: string }) {
   return <span className="text-label uppercase text-teal">{text}</span>;
 }
 
-function MarketCells({ token }: { token: IndexToken }) {
-  const market = useTokenMarket(token.address);
-
+function MarketCells({ market }: { market: MarketState }) {
   if (market.status === "ready") {
     const { priceUsd, change24hPct, marketCapUsd, liquidityUsd } = market.data;
     const changeColor =
@@ -20,19 +31,19 @@ function MarketCells({ token }: { token: IndexToken }) {
     return (
       <>
         <td role="cell" className="font-mono text-ui text-steel">
-          <span className="cell-label text-label uppercase text-teal">Price</span>
+          <CellLabel text="Price" />
           {priceUsd === null ? <EmptyCell text="—" /> : formatUsdPrice(priceUsd)}
         </td>
         <td role="cell" className={`font-mono text-ui ${changeColor}`}>
-          <span className="cell-label text-label uppercase text-teal">24h</span>
+          <CellLabel text="24h" />
           {change24hPct === null ? <EmptyCell text="—" /> : formatPct(change24hPct)}
         </td>
         <td role="cell" className="font-mono text-ui text-steel">
-          <span className="cell-label text-label uppercase text-teal">Market cap</span>
+          <CellLabel text="Market cap" />
           {marketCapUsd === null ? <EmptyCell text="—" /> : formatUsdCompact(marketCapUsd)}
         </td>
         <td role="cell" className="font-mono text-ui text-steel">
-          <span className="cell-label text-label uppercase text-teal">Liquidity</span>
+          <CellLabel text="Liquidity" />
           {liquidityUsd === null ? <EmptyCell text="—" /> : formatUsdCompact(liquidityUsd)}
         </td>
       </>
@@ -41,7 +52,10 @@ function MarketCells({ token }: { token: IndexToken }) {
 
   const placeholder =
     market.status === "loading" ? (
-      <ChevronLoader />
+      <>
+        <ChevronLoader />
+        <span className="sr-only">loading</span>
+      </>
     ) : market.status === "unavailable" ? (
       <EmptyCell text="unavailable" />
     ) : market.status === "no-pairs" ? (
@@ -54,7 +68,7 @@ function MarketCells({ token }: { token: IndexToken }) {
     <>
       {COLUMNS.slice(2).map((column) => (
         <td role="cell" key={column}>
-          <span className="cell-label text-label uppercase text-teal">{column}</span>
+          <CellLabel text={column} />
           {placeholder}
         </td>
       ))}
@@ -62,7 +76,7 @@ function MarketCells({ token }: { token: IndexToken }) {
   );
 }
 
-export default function TokenTable({ tokens }: { tokens: IndexToken[] }) {
+export default function TokenTable({ rows }: { rows: TokenRow[] }) {
   return (
     <table role="table" className="token-table">
       <thead role="rowgroup">
@@ -80,7 +94,7 @@ export default function TokenTable({ tokens }: { tokens: IndexToken[] }) {
         </tr>
       </thead>
       <tbody role="rowgroup">
-        {tokens.map((token) => (
+        {rows.map(({ token, market }) => (
           <tr role="row" key={token.symbol}>
             <td role="cell" data-span="">
               <span className="hidden sm:inline-flex">
@@ -91,13 +105,13 @@ export default function TokenTable({ tokens }: { tokens: IndexToken[] }) {
               </span>
             </td>
             <td role="cell" data-span="" className="text-center text-ui text-steel sm:text-left">
-              <span className="cell-label text-label uppercase text-teal">Name</span>
+              <CellLabel text="Name" />
               {token.name}
               <span className="mt-0.5 block text-label uppercase text-teal sm:hidden">
-                quoted in {QUOTE_KIND_LABELS[token.quoteKind].toLowerCase()}
+                {token.quoteKind} pair
               </span>
             </td>
-            <MarketCells token={token} />
+            <MarketCells market={market} />
           </tr>
         ))}
       </tbody>

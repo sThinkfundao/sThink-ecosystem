@@ -57,11 +57,14 @@ export default function SocialLinks() {
             </a>
           ) : (
             <span
-              aria-label={`${name} — not yet available`}
               title={`${name} — not yet available`}
-              className="flex h-8 w-8 cursor-not-allowed items-center justify-center rounded-sm border border-edge/60 bg-surface/50 text-steel/40"
+              className="flex h-8 cursor-not-allowed items-center gap-1.5 rounded-sm border border-edge/60 bg-surface/50 px-2 text-steel/40"
             >
               {icon}
+              <span aria-hidden="true" className="text-label uppercase">
+                soon
+              </span>
+              <span className="sr-only">{name} — not yet available</span>
             </span>
           )}
         </li>
