@@ -17,16 +17,14 @@ const VARIANTS: Record<Variant, string> = {
     "px-2 py-1 text-teal enabled:hover:text-ice enabled:active:text-steel",
 };
 
+export function buttonClasses(variant: Variant, className?: string): string {
+  return `${BASE} ${VARIANTS[variant]}${className ? ` ${className}` : ""}`;
+}
+
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant;
 }
 
 export default function Button({ variant = "secondary", className, ...rest }: ButtonProps) {
-  return (
-    <button
-      type="button"
-      className={`${BASE} ${VARIANTS[variant]}${className ? ` ${className}` : ""}`}
-      {...rest}
-    />
-  );
+  return <button type="button" className={buttonClasses(variant, className)} {...rest} />;
 }

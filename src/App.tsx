@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Header from "./features/header/Header.tsx";
+import Hero from "./features/hero/Hero.tsx";
 import WalletModal, { type WalletName } from "./features/wallet/WalletModal.tsx";
 
 export default function App() {
@@ -12,7 +13,9 @@ export default function App() {
         connectedAs={connectedAs ? `${connectedAs} · demo` : null}
         onWalletClick={() => setWalletOpen(true)}
       />
-      <main className="mx-auto max-w-6xl px-4 sm:px-6" />
+      <main>
+        <Hero />
+      </main>
       <WalletModal
         open={walletOpen}
         connectedAs={connectedAs}
